@@ -52,7 +52,7 @@ public class Producto {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
+    var sb = new StringBuilder();
     sb.append("Producto: ").append(this.nombre).append(".\n")
       .append("Precio: ").append(this.precio).append(".\n")
       .append("________________________");

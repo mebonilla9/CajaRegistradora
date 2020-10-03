@@ -6,17 +6,16 @@
 package co.edu.umb.tallerprogramacion.cajaregistradora;
 
 /**
- *
  * @author dev_manuel
  */
 public class Cuenta {
 
   private int costo;
-  private StringBuilder productos;
+  private String productos;
 
   public Cuenta() {
     costo = 0;
-    productos = new StringBuilder();
+    productos = "";
   }
 
   /**
@@ -36,21 +35,22 @@ public class Cuenta {
   /**
    * @return the productos
    */
-  public StringBuilder getProductos() {
+  public String getProductos() {
     return productos;
   }
 
   /**
    * @param productos the productos to set
    */
-  public void setProductos(StringBuilder productos) {
+  public void setProductos(String productos) {
     this.productos = productos;
   }
 
   @Override
   public String toString() {
-    this.productos.append("\nValor compra: ").append(this.costo);
-    return this.productos.toString();
+    var sb = new StringBuilder(this.productos.substring(0, this.productos.length()-1));
+    sb.append("\nValor compra: ").append(this.costo);
+    return sb.toString();
   }
 
 }

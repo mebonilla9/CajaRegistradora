@@ -8,7 +8,6 @@ package co.edu.umb.tallerprogramacion.cajaregistradora;
 import java.util.ArrayList;
 
 /**
- *
  * @author dev_manuel
  */
 public class HiloRegistrador extends Thread {
@@ -18,43 +17,55 @@ public class HiloRegistrador extends Thread {
 
   private int procesar;
 
-  public HiloRegistrador(String name, ArrayList<Producto> listaProductos) {
+  public HiloRegistrador(String name) {
     super(name);
     procesar = 1;
-    this.listaProductos = listaProductos;
+    this.listaProductos = new ArrayList<>();
     this.listaCuentas = new ArrayList<>();
   }
 
   @Override
   public void run() {
+    try {
+      procesarCompra();
+    } catch (InterruptedException e) {
+      e.printStackTrace(System.err);
+    }
+  }
+
+  private void procesarCompra() throws InterruptedException {
     while (true) {
-      if (procesar > 0) {
-        // Crear una nueva cuenta de la caja registradora
-        Cuenta cuenta = new Cuenta();
-
-        // Iterar los productos para generar un calculo de la compra
-        this.getListaProductos().forEach((producto) -> {
-          cuenta.setCosto(cuenta.getCosto() + producto.getPrecio());
-          cuenta.getProductos().append(producto.getNombre()).append(",\n");
-        });
-
-        // Imprimir el mensaje de la cuenta
-        System.out.println(cuenta);
-
-        // Agregar la cuenta al informe de ventas de la registradora.
-        listaCuentas.add(cuenta);
-
-        // Vaciar la lista de productos
-        getListaProductos().clear();
-        procesar = 0;
+      Thread.sleep(1);
+      if (procesar <= 0) {
+        continue;
       }
+      // Crear una nueva cuenta de la caja registradora
+      var cuenta = new Cuenta();
+      var resumen = new StringBuilder();
+      // Iterar los productos para generar un calculo de la compra
+      listaProductos.forEach((producto) -> {
+        cuenta.setCosto(cuenta.getCosto() + producto.getPrecio());
+        resumen.append(producto.getNombre()).append(",");
+      });
+      cuenta.setProductos(resumen.toString());
+
+      // Agregar la cuenta al informe de ventas de la registradora.
+      listaCuentas.add(cuenta);
+
+      // Vaciar la lista de productos
+      this.listaProductos.clear();
+      procesar = 0;
     }
   }
 
   /**
+   *
    */
-  public void cargarEnBanda() {
-    procesar++;
+  public void cargarEnBanda(ArrayList<Producto> listaProductos) {
+    if (!listaProductos.isEmpty()) {
+      this.listaProductos.addAll(listaProductos);
+      procesar++;
+    }
   }
 
   /**
@@ -64,4 +75,7 @@ public class HiloRegistrador extends Thread {
     return listaProductos;
   }
 
+  public ArrayList<Cuenta> getListaCuentas() {
+    return listaCuentas;
+  }
 }
